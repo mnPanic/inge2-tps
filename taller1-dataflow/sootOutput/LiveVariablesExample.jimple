@@ -1,0 +1,70 @@
+class LiveVariablesExample extends java.lang.Object
+{
+/*LiveVariablesExample.java*/
+
+/*1*/
+    void <init>()
+    {
+        LiveVariablesExample this;
+
+        this := @this: LiveVariablesExample;
+/*Live Variable: this*/
+
+        specialinvoke this.<java.lang.Object: void <init>()>();
+/*2*/
+
+        return;
+/*2*/
+    }
+
+/*4*/
+    int doSomething(int, int)
+    {
+        LiveVariablesExample this;
+        int a, b, c, d, r;
+
+        this := @this: LiveVariablesExample;
+
+        a := @parameter0: int;
+/*Live Variable: a*/
+
+        b := @parameter1: int;
+/*Live Variable: a*/
+/*Live Variable: b*/
+
+        c = a + b;
+/*5*/
+/*Live Variable: c*/
+/*Live Variable: b*/
+/*Live Variable: a*/
+
+        d = a - b;
+/*6*/
+/*Live Variable: c*/
+/*Live Variable: d*/
+/*Live Variable: a*/
+/*Live Variable: b*/
+
+        if a >= b goto label1;
+/*8*/
+/*Live Variable: c*/
+/*Live Variable: d*/
+
+        r = c;
+/*9*/
+/*Live Variable: r*/
+
+        goto label2;
+/*9*/
+/*Live Variable: r*/
+
+     label1:
+        r = d;
+/*11*/
+/*Live Variable: r*/
+
+     label2:
+        return r;
+/*13*/
+    }
+}
