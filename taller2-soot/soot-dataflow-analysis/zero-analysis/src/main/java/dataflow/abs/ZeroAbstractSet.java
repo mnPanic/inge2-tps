@@ -28,6 +28,9 @@ public class ZeroAbstractSet {
 	public ZeroAbstractSet union(ZeroAbstractSet another) {
 		ZeroAbstractSet unionSet = new ZeroAbstractSet();
 
+		// Necesitamos hacer el merge en ambos sentidos para considerar las claves de los dos conjuntos
+		// Ya que podría haber una clave que esté en el primero y no en el segundo (contemplado con el primer merge)
+		// o al revés (contemplado con el segundo merge).
 		mergeWith(this, another, unionSet);
 		mergeWith(another, this, unionSet);
 

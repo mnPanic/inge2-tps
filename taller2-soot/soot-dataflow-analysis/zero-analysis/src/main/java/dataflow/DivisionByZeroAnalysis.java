@@ -43,9 +43,11 @@ public class DivisionByZeroAnalysis extends ForwardFlowAnalysis<Unit, ZeroAbstra
 
       // Set in flowed values
       out.setValue(variable.getName(), resolvedValue);
-      //unit.addTag(new StringTag(String.format("<%s, %s>", variable.getName(), resolvedValue)));
-      unit.addTag(new StringTag(out.toString()));
     }
+
+    // Agrega la información de Dataflow para cada instrucción
+    // Sin esto, soot no agrega de ninguna forma esta información al output.
+    unit.addTag(new StringTag(out.toString()));
   }
 
   protected ZeroAbstractSet newInitialFlow() {

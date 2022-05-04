@@ -50,6 +50,7 @@ public enum ZeroAbstractValue {
   }
 
   public ZeroAbstractValue substract(ZeroAbstractValue another) {
+    // "trampa" para simplificar
     return this.add(another);
   }
 

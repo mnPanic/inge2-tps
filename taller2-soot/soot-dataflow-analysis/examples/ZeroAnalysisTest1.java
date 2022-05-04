@@ -3,6 +3,7 @@ public class ZeroAnalysisTest1 {
     int x = 0;
     int k = x * n;
     int j = m / k;
+    // IN(x)=IN(k)=Z,IN(m)=IN(n)=MZ,IN(j)=Undef
     return j;
-  }
+}
 }
