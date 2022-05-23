@@ -94,6 +94,8 @@ sat
 )
 ```
 
+<div style="page-break-after: always;"></div>
+
 ## Ejercicio 4
 
 - a.
