@@ -1,0 +1,37 @@
+// Ej 5
+
+AGUA = AGUA[5],
+AGUA[i:0..10] = (
+	when (i < 10) agua[i+1] -> AGUA[i+1] | 
+	when (i > 0) agua[i-1] -> AGUA[i-1] 
+).
+
+// Ej 4.a
+range Bajo = 0..2
+range Medio = 3..7
+range Alto = 8..10
+SENSOR = (
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+BAJO = (
+	nivel -> bajo -> BAJO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+MEDIO = (
+	nivel -> medio -> MEDIO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+ALTO = (
+	nivel -> alto -> ALTO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+).
+
+||SENSOR_AGUA = (SENSOR || AGUA).

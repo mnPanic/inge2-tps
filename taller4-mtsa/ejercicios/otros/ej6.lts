@@ -1,0 +1,27 @@
+// Ej6
+
+range Bajo = 0..2
+range Medio = 3..7
+range Alto = 8..10
+
+SENSOR = SENSOR[0],
+SENSOR[i:0..10] = (
+	when (i < 3) sense -> NIVEL_FROM_BAJO |
+	when (i > 7) sense -> NIVEL_FROM_ALTO |
+	when (i > 2 && i < 8) sense -> NIVEL_FROM_MEDIO
+),
+NIVEL_FROM_BAJO = (
+	agua[i:Bajo] -> SENSOR[i] |
+	agua[i:Medio] -> alert -> SENSOR[i] |
+	agua[i:Alto] -> alert-> SENSOR[i]
+),
+NIVEL_FROM_MEDIO = (
+	agua[i:Bajo] -> alert -> SENSOR[i] |
+	agua[i:Medio] -> SENSOR[i] |
+	agua[i:Alto] -> alert-> SENSOR[i]
+),
+NIVEL_FROM_ALTO = (
+	agua[i:Bajo] -> alert -> SENSOR[i] |
+	agua[i:Medio] -> alert -> SENSOR[i] |
+	agua[i:Alto] -> SENSOR[i]
+).

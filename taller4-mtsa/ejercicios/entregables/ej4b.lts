@@ -1,0 +1,45 @@
+// Ej 4b
+range Bajo = 0..2
+range Medio = 3..7
+range Alto = 8..10
+SENSOR = (
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+BAJO = (
+	nivel -> CONSULTA_BAJO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+CONSULTA_BAJO = (
+	bajo -> BAJO |
+	agua[i:Bajo] -> CONSULTA_BAJO |
+	agua[i:Medio] -> CONSULTA_MEDIO |
+	agua[i:Alto] -> CONSULTA_ALTO
+),
+MEDIO = (
+	nivel -> CONSULTA_MEDIO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+CONSULTA_MEDIO = (
+	medio -> MEDIO |
+	agua[i:Bajo] -> CONSULTA_BAJO |
+	agua[i:Medio] -> CONSULTA_MEDIO |
+	agua[i:Alto] -> CONSULTA_ALTO
+),
+ALTO = (
+	nivel -> CONSULTA_ALTO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+CONSULTA_ALTO = (
+	alto -> ALTO |
+	agua[i:Bajo] -> CONSULTA_BAJO |
+	agua[i:Medio] -> CONSULTA_MEDIO |
+	agua[i:Alto] -> CONSULTA_ALTO
+).

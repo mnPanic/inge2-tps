@@ -1,0 +1,76 @@
+// Ej 7
+
+range R = 0..7
+VARIABLE = VARIABLE[3],
+VARIABLE[i:R] = (
+	read[i] -> VARIABLE[i] |
+	write[j:R] -> VARIABLE[j] |
+	write[8]-> overflow -> STOP |
+	write[-1] -> underflow -> STOP
+).
+
+SUMA1 = (read[i:R] -> write[i+1] -> SUMA1) + {write[-1], write[0]}.
+RESTA1 = (read[i:R] -> write[i-1] -> RESTA1) + {write[7], write[8]}.
+
+||COMP = (
+	{inc, dec}::VARIABLE
+	|| dec:RESTA1
+	|| inc:SUMA1
+).
+
+/* Trazas
+
+- Overflow:
+
+ inc.read.3
+ inc.write.4
+ inc.read.4
+ inc.write.5
+ inc.read.5
+ inc.write.6
+ inc.read.6
+ inc.write.7
+ inc.read.7
+ inc.write.8
+ inc.overflow
+STOP
+
+- Underflow
+ dec.read.3
+ dec.write.2
+ dec.read.2
+ dec.write.1
+ dec.read.1
+ dec.write.0
+ dec.read.0
+ dec.write.-1
+ dec.underflow
+STOP
+
+- Ni uno ni otro
+ inc.read.3
+ inc.write.4
+ inc.read.4
+ inc.write.5
+ inc.read.5
+ inc.write.6
+ dec.read.6
+ dec.write.5
+ dec.read.5
+ dec.write.4
+ inc.read.4
+ inc.write.5
+ dec.read.5
+ dec.write.4
+ inc.read.4
+ inc.write.5
+ dec.read.5
+ dec.write.4
+
+- Race condition
+  inc.read.3
+ dec.read.3
+ inc.write.4
+ dec.write.2
+
+*/

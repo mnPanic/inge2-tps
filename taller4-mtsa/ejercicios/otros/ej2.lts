@@ -1,0 +1,20 @@
+// Ej 2
+P = (a -> b -> P).
+Q = (c -> b -> Q).
+//||S = (P || Q).
+
+// a
+S2 = (a -> c -> SYNC | c -> a -> SYNC),
+	SYNC = (b -> S2).
+
+// b
+R = (a -> c -> R).
+//||Z = (S2 || R).
+
+// c
+T = (a -> b -> T)\{b}.
+||TQ = (T || Q). 
+
+T2 = (a -> T2).
+||T2Q = (T2 || Q).
+// genera las trazas (a*ca*b)*

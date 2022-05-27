@@ -1,0 +1,6 @@
+// Ej 3
+VARIABLE(N=3) = VARIABLE[0],
+VARIABLE[i:0..N] = (
+	write[j:0..N] -> VARIABLE[j] |
+	read[i] -> VARIABLE[i]
+).

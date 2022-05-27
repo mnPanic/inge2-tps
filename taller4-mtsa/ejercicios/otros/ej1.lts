@@ -1,0 +1,28 @@
+// Ejercicio 1
+ENCUENTRO = (hola -> conversar -> adios -> STOP).
+
+TRABAJO = (llego -> trabajo -> parto -> TRABAJO).
+
+MOVIMIENTO = (adelante -> UNO),
+	UNO = (izquierda -> STOP | derecha -> MOVIMIENTO).
+
+// MOVIMIENTO = (adelante -> (izquierda -> STOP | derecha -> MOVIMIENTO)).
+
+MONEDA = (tira -> CARA | tira -> CECA),
+	CARA = (cara -> MONEDA),
+	CECA = (ceca -> MONEDA).
+
+//CUATROTICKS = (tick -> tick -> tick -> tick -> STOP).
+CUATROTICKS(N=4) = CUATROTICKS[0],
+CUATROTICKS[i:0..N] = (when (i < N) tick[i] -> CUATROTICKS[i+1]).
+
+
+//DOBLE = (
+//	in3 -> UNO |
+//	in1 -> DOS |
+//	in2 -> TRES
+//),
+//	UNO = (out6 -> DOBLE),
+//	DOS = (out2 -> DOBLE),
+//	TRES = (out4 -> DOBLE).
+DOBLE = (in[i:1..3] -> out[i*2] -> DOBLE).
