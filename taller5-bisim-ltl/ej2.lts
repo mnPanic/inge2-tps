@@ -1,0 +1,12 @@
+PAux = (a -> (b -> STOP |
+    t -> c -> STOP)
+).
+QAux = (a -> (c -> STOP |
+    t -> b -> STOP)
+).
+
+||Q = QAux\{t}.
+||P = PAux\{t}.
+
+||SYS = (P||Q).
+

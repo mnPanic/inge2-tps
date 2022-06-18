@@ -1,0 +1,15 @@
+// Ej 13
+Q = (a -> Q).
+R = (a -> b -> STOP) + {a}.
+
+||QR = (Q || R).
+progress SiempreA = {a}
+/*
+Progress violation: SiempreA
+Trace to terminal set of states:
+	a
+	b
+Cycle in terminal set:
+Actions in terminal set:
+	{}
+*/

@@ -1,0 +1,4 @@
+// Ej 11
+A = (a -> b -> A).
+property Obs = (a -> b -> Obs) + {c}.
+||AObs = (A || Obs).

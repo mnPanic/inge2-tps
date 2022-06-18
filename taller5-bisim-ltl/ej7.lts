@@ -1,0 +1,6 @@
+property CajaDeCambios = (
+	pisoEmbrague -> (
+		sueltoEmbrague -> CajaDeCambios |
+		muevoPalanca -> sueltoEmbrague -> CajaDeCambios
+	)
+).

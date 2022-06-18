@@ -1,0 +1,75 @@
+// Ej 20
+const N = 10
+range R = 0..N
+
+ENTRADA = (entry -> ENTRADA).
+SALIDA = (exit -> SALIDA).
+DIRECTOR = (open -> close -> DIRECTOR).
+CONTROL = (open -> GENTE[0]),
+	GENTE[i:R] = (
+		when(i < N) entry -> GENTE[i+1] |
+		when(i > 0) exit -> GENTE[i-1] | 
+		when(i != 0 & i <= N) close -> SALIENDO[i] |
+		when(i == 0) close -> CONTROL
+	),
+
+	SALIENDO[i:R] = (
+		when(i > 1) exit -> SALIENDO[i-1] |
+		when(i == 1) exit -> CONTROL
+	).
+
+||MUSEO = (ENTRADA || SALIDA || DIRECTOR || CONTROL).
+
+// 1. observador que lleve a un estado de error sólo si es
+// posible entrar cuando el museo está cerrado.
+property ObsEnterAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+),
+EntryOrExitAndClose = (
+	entry -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+).
+
+// Weak until porque no necesariamente abre luego de cerrar
+// !entry porque arranca cerrado
+assert PropCantEnterWhenClosed = (
+	(!entry W open) // Arranca cerrado
+	&& [](
+		close -> X(!entry W open)
+	)
+)
+
+// 2. Observador que lleve a un estado de error si es
+// posible salir del museo cuando está cerrado.
+property ObsExitAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+),
+EntryOrExitAndClose = (
+	exit -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+).
+
+// Weak until porque no necesariamente abre luego de cerrar
+assert PropCantExitWhenClosed = (
+	(!exit W open) // Arranca cerrado
+	&& [](
+		close -> X(!exit W open)
+	)
+)
+
+// 3.
+||MUSEO_OBS_1 = (MUSEO || ObsEnterAfterClosed).
+||MUSEO_OBS_2 = (MUSEO || ObsExitAfterClosed).
+/*
+Trace to property violation in ObsExitAfterClosed:
+	open
+	entry
+	close
+	exit
+*/
