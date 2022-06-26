@@ -9,7 +9,7 @@ Grupo 6 (F)
 
 ## Ejercicio 1
 
-```
+```text
 R =
     P0, Q0
     P1, Q1
@@ -82,18 +82,87 @@ property CajaDeCambios = (
 
 ## Ejercicio 8
 
-````fsp
-property UnoYDos = (uno -> STOP) + {dos}.
 ```fsp
-````
+property UnoYDos = (uno -> STOP) + {dos}.
+```
 
 ## Ejercicio 9
 
 En [`ej9.lts`](ej9.lts)
 
+```lts
+const N = 10
+range R = 0..N
+
+ENTRADA = (entry -> ENTRADA).
+SALIDA = (exit -> SALIDA).
+DIRECTOR = (open -> close -> DIRECTOR).
+CONTROL = (open -> GENTE[0]),
+	GENTE[i:R] = (
+		when(i < N) entry -> GENTE[i+1] |
+		when(i > 0) exit -> GENTE[i-1] | 
+		when(i != 0 & i <= N) close -> SALIENDO[i] |
+		when(i == 0) close -> CONTROL
+	),
+
+	SALIENDO[i:R] = (
+		when(i > 1) exit -> SALIENDO[i-1] |
+		when(i == 1) exit -> CONTROL
+	).
+
+||MUSEO = (ENTRADA || SALIDA || DIRECTOR || CONTROL).
+
+// 1.
+property ObsEnterAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+),
+EntryOrExitAndClose = (
+	entry -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+).
+
+// 2.
+property ObsExitAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+),
+EntryOrExitAndClose = (
+	exit -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+).
+
+// 3.
+||MUSEO_OBS_1 = (MUSEO || ObsEnterAfterClosed).
+||MUSEO_OBS_2 = (MUSEO || ObsExitAfterClosed).
+/*
+Trace to property violation in ObsExitAfterClosed:
+	open
+	entry
+	close
+	exit
+*/
+```
+
 ## Ejercicio 10
 
 En [`ej10.lts`](ej10.lts)
+
+```lts
+// Propiedad que verifica que una vez declarado un líder,
+// ningún otro nodo se declara como líder.
+property ObsOnlyOneLeader = (
+	proc[i:1..N].leader -> LeaderFound[i]
+),
+
+LeaderFound[i:1..N] = (proc[i].leader -> LeaderFound[i]).  
+
+||LCR_OBS = (LCR || ObsOnlyOneLeader).
+```
 
 ## Ejercicio 11
 
@@ -137,6 +206,9 @@ Actions in terminal set:
 ## Ejercicio 14
 
 - a. `[]enBase` safety porque un contraejemplo finito es `!enBase`
+
+  Corrección: deberia ser `[]<>enBase` (Liveness).
+
 - b. `[](bateriaBaja => X (modoAhorro U enBase))` safety, contraej finito es `bateriaBaja, !modoAhorro`
 - c. `[](paredDelante => X (girandoAIzquierda U !paredDelante))`
 
@@ -158,6 +230,8 @@ Las LTL se evalúan sobre las trazas de los LTSs. Cada una se modela como una es
 
   `!<>salióDeBase`
 
+  Corrección: Debería ser `[](salióDeBase -><>entróABase).`
+
 - b. `[](bateriaBaja => X (modoAhorro U enBase))`
 
   `[](bateríaBaja => X (modoAhorroOn ^ (!modoAhorroOff U entróABase)))`
@@ -178,3 +252,81 @@ Las LTL se evalúan sobre las trazas de los LTSs. Cada una se modela como una es
 ## Ejercicio 20
 
 En [`ej20.lts`](ej20.lts)
+
+```lts
+// Ej 20
+const N = 10
+range R = 0..N
+
+ENTRADA = (entry -> ENTRADA).
+SALIDA = (exit -> SALIDA).
+DIRECTOR = (open -> close -> DIRECTOR).
+CONTROL = (open -> GENTE[0]),
+	GENTE[i:R] = (
+		when(i < N) entry -> GENTE[i+1] |
+		when(i > 0) exit -> GENTE[i-1] | 
+		when(i != 0 & i <= N) close -> SALIENDO[i] |
+		when(i == 0) close -> CONTROL
+	),
+
+	SALIENDO[i:R] = (
+		when(i > 1) exit -> SALIENDO[i-1] |
+		when(i == 1) exit -> CONTROL
+	).
+
+||MUSEO = (ENTRADA || SALIDA || DIRECTOR || CONTROL).
+
+// 1. observador que lleve a un estado de error sólo si es
+// posible entrar cuando el museo está cerrado.
+property ObsEnterAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+),
+EntryOrExitAndClose = (
+	entry -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsEnterAfterClosed
+).
+
+// Weak until porque no necesariamente abre luego de cerrar
+// !entry porque arranca cerrado
+assert PropCantEnterWhenClosed = (
+	(!entry W open) // Arranca cerrado
+	&& [](
+		close -> X(!entry W open)
+	)
+)
+
+// 2. Observador que lleve a un estado de error si es
+// posible salir del museo cuando está cerrado.
+property ObsExitAfterClosed = (
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+),
+EntryOrExitAndClose = (
+	exit -> EntryOrExitAndClose |
+	// Evitamos que property marque como error cosas que no son
+	open -> EntryOrExitAndClose |
+	close -> ObsExitAfterClosed
+).
+
+// Weak until porque no necesariamente abre luego de cerrar
+assert PropCantExitWhenClosed = (
+	(!exit W open) // Arranca cerrado
+	&& [](
+		close -> X(!exit W open)
+	)
+)
+
+// 3.
+||MUSEO_OBS_1 = (MUSEO || ObsEnterAfterClosed).
+||MUSEO_OBS_2 = (MUSEO || ObsExitAfterClosed).
+/*
+Trace to property violation in ObsExitAfterClosed:
+	open
+	entry
+	close
+	exit
+*/
+```

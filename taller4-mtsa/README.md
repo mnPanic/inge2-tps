@@ -22,9 +22,71 @@ atiende una petición de nivel, mientras que el segundo sí.
 
 Modelado en [`ej5.lts`](ejercicios/entregables/ej5.lts)
 
+```lts
+// Ej 5
+
+AGUA = AGUA[5],
+AGUA[i:0..10] = (
+	when (i < 10) agua[i+1] -> AGUA[i+1] | 
+	when (i > 0) agua[i-1] -> AGUA[i-1] 
+).
+
+// Ej 4.a
+range Bajo = 0..2
+range Medio = 3..7
+range Alto = 8..10
+SENSOR = (
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+BAJO = (
+	nivel -> bajo -> BAJO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+MEDIO = (
+	nivel -> medio -> MEDIO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+),
+ALTO = (
+	nivel -> alto -> ALTO |
+	agua[i:Bajo] -> BAJO |
+	agua[i:Medio] -> MEDIO |
+	agua[i:Alto] -> ALTO
+).
+
+||SENSOR_AGUA = (SENSOR || AGUA).
+```
+
 ## Ejercicio 7
 
-Modelado en [`ej7.lts`](ejercicios/entregables/ej7.lts). Trazas:
+Modelado en [`ej7.lts`](ejercicios/entregables/ej7.lts).
+
+```lts
+range R = 0..7
+VARIABLE = VARIABLE[3],
+VARIABLE[i:R] = (
+	read[i] -> VARIABLE[i] |
+	write[j:R] -> VARIABLE[j] |
+	write[8]-> overflow -> STOP |
+	write[-1] -> underflow -> STOP
+).
+
+SUMA1 = (read[i:R] -> write[i+1] -> SUMA1) + {write[-1], write[0]}.
+RESTA1 = (read[i:R] -> write[i-1] -> RESTA1) + {write[7], write[8]}.
+
+||COMP = (
+	{inc, dec}::VARIABLE
+	|| dec:RESTA1
+	|| inc:SUMA1
+).
+```
+
+Trazas:
 
 - La variable da overflow
 
